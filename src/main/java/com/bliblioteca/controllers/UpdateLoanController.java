@@ -37,7 +37,7 @@ public class UpdateLoanController extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
         HttpSession session = request.getSession(true);
-List<User> users = serviceUser.findAll();
+        List<User> users = serviceUser.findAll();
         session.setAttribute("users", users);
         Long id = Long.valueOf(request.getParameter("id"));
         List<Book> books = serviceBook.findAll();
@@ -59,10 +59,15 @@ List<User> users = serviceUser.findAll();
                 devolutionDate = request.getParameter("devolutionDate"),
                 state = request.getParameter("state");
         Loan loan;
-        loan = new Loan(id,serviceUser.findById( Long.valueOf(user)).get(), serviceBook.findById(Long.valueOf(book)).get(), LocalDate.parse(dateLoan) , state, LocalDate.now());
+        loan = new Loan(id, serviceUser.findById(Long.valueOf(user)).get(), serviceBook.findById(Long.valueOf(book)).get(), LocalDate.parse(dateLoan), state, LocalDate.now());
+        Optional<Book> updateBook = serviceBook.findById(Long.valueOf(book));
+        if (state.equals("Devuelto")) {
+            updateBook.get().setState(Boolean.TRUE);
+            serviceBook.modified(updateBook.get());
+        }
 
         Boolean isUpdated = service.modified(loan);
-        session.setAttribute("event", isUpdated.toString());
+        session.setAttribute("event", isUpdated);
         if (isUpdated) {
             session.setAttribute("message", "Prestamo Modificado Exitosamente");
         } else {

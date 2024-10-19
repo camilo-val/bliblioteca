@@ -69,16 +69,31 @@ public class UpdateUserController extends HttpServlet {
             Logger.getLogger(CreateUserController.class.getName()).log(Level.SEVERE, null, ex);
         }
         User user = new User(id, name, lastname, email, password, Boolean.TRUE, rol);
-
-        Boolean isUpdated = service.modified(user);
-        session.setAttribute("event", isUpdated.toString());
-        if (isUpdated) {
-            session.setAttribute("message", "Usuario Modificado Exitosamente");
+        String validateInputs = "";
+        if (email.equals(service.findById(id).get().getEmail())) {
+            Boolean isUpdated = service.modified(user);
+            session.setAttribute("event", isUpdated.toString());
+            if (isUpdated) {
+                session.setAttribute("message", "Usuario Modificado Exitosamente");
+                response.sendRedirect("UserController?flag=U");
+            }
         } else {
-            session.setAttribute("message", "Error Al Modificar El Usuario");
+            validateInputs = service.isCorrectInput(user);
+            if (validateInputs.equalsIgnoreCase("Aprobado")) {
+                Boolean isUpdated = service.modified(user);
+                session.setAttribute("event", isUpdated.toString());
+                if (isUpdated) {
+                    session.setAttribute("message", "Usuario Modificado Exitosamente");
+                    response.sendRedirect("UserController?flag=U");
 
+                } else {
+                    session.setAttribute("message", "Error Al Modificar El Usuario");
+                }
+            } else {
+                response.sendRedirect("updateUser.jsp?message=" + validateInputs);
+            }
         }
-        response.sendRedirect("UserController");
+
     }
 
     @Override

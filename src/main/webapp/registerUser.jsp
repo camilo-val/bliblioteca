@@ -36,7 +36,7 @@
                     <div class="message-done">
                         <p>Usuario registrado exitosamente</p>
                     </div>
-                    <% }%>
+                    <% } request.removeAttribute("message");%>
                     <div class="container-button">
                         <button type="submit">Crear</button>
                         <div class="return-button">

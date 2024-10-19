@@ -4,8 +4,8 @@
 <%@page import="com.bliblioteca.models.User"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-    <!DOCTYPE html>
-    <html>
+<!DOCTYPE html>
+<html>
 
     <head>
         <title>Start Page</title>
@@ -22,50 +22,52 @@
     <body>
         <%@include file="./layout/validateSession.jsp"%> 
         <%@include file="./layout/header.jsp" %>
-            <div class="home-container">
-                <%@include file="./layout/sidebar.jsp" %>
-                    <main class="main">
-                        <div class="container-form">
-                            <%%>
-                            <form class="form-login" action="UpdateLoanController" method="POST">
-                                <h1>Registro de Prestamos</h1>
-                                <%List<User> users = (List<User>)request.getSession().getAttribute("users");
-                                List<Book> books = (List<Book>)request.getSession().getAttribute("books"); 
-                                Optional<Loan> loan = (Optional<Loan>) request.getSession().getAttribute("loan");%>
-                                <input type="hidden" name="id" value="<%=loan.get().getId()%>">
-                                <select name="user">
-                                    <option value="<%= loan.get().getUser().getId() %>"><%=loan.get().getUser().getEmail()%> <%=loan.get().getUser().getName()%></option>
-                                    <%for(User userUpdate : users){%>
-                                    <option value="<%= userUpdate.getId()%>"><%=userUpdate.getEmail()%></option>
-                                    <%}%>
-                                </select>
-                                <select name="book">
-                                    <option value="<%= loan.get().getBook().getId() %>"><%=loan.get().getBook().getTitle()%> <%=loan.get().getBook().getAuthor()%></option>
-                                   <%for(Book book: books){%>
-                                    <option value="<%= book.getId()%>"><%=book.getTitle()%> <%=book.getAuthor()%></option>
-                                    <%}
-                                    %>
-                                </select>
-                                    <input name="dateLoan" type="date" placeholder="Año Publicación" hidden="hidden" value="<%= loan.get().getDateLoan()%>">
-                                <select name="state">
-                                    <option value="<%= loan.get().getState()%>"><%=loan.get().getState()%></option>
-                                    <option value="Devuelto">Devuelto</option>
-                                    <option value="No devuelto">No devuelto</option>
-                                    <option value="En prestamo">En prestamo</option>
-                                </select>
-                                    <% request.getSession().removeAttribute("books");
-                                    request.getSession().removeAttribute("loan");
-                                    request.getSession().removeAttribute("users");%>
-                                <div class="container-button">
-                                    <button type="submit">Modificar</button>
-                                <div class="return-button">
-                                        <a href="LoanController">Volver</a>
-                                </div>
-                                </div>
-                            </form>
+        <div class="home-container">
+            <%@include file="./layout/sidebar.jsp" %>
+            <main class="main">
+                <div class="container-form">
+                    <%%>
+                    <form class="form-login" action="UpdateLoanController" method="POST">
+                        <h1>Registro de Prestamos</h1>
+                        <%List<User> users = (List<User>) request.getSession().getAttribute("users");
+                                    List<Book> books = (List<Book>) request.getSession().getAttribute("books");
+                                    Optional<Loan> loan = (Optional<Loan>) request.getSession().getAttribute("loan");%>
+                        <input type="hidden" name="id" value="<%=loan.get().getId()%>">
+                        <select name="user">
+                            <option value="<%= loan.get().getUser().getId()%>"><%=loan.get().getUser().getEmail()%> <%=loan.get().getUser().getName()%></option>
+                            <%for (User userUpdate : users) {%>
+                            <option value="<%= userUpdate.getId()%>"><%=userUpdate.getEmail()%></option>
+                            <%}%>
+                        </select>
+                        <select name="book">
+                            <option value="<%= loan.get().getBook().getId()%>"><%=loan.get().getBook().getTitle()%> <%=loan.get().getBook().getAuthor()%></option>
+                            <%for (Book book : books) {%>
+                            <%
+                                       if (book.getState().equals(true)) {%>
+                            <option value="<%= book.getId()%>"><%=book.getTitle()%> <%=book.getAuthor()%></option>
+                            <%}}
+                            %>
+                        </select>
+                        <input name="dateLoan" type="date" placeholder="Año Publicación" hidden="hidden" value="<%= loan.get().getDateLoan()%>">
+                        <select name="state">
+                            <option value="<%= loan.get().getState()%>"><%=loan.get().getState()%></option>
+                            <option value="Devuelto">Devuelto</option>
+                            <option value="No devuelto">No devuelto</option>
+                            <option value="En prestamo">En prestamo</option>
+                        </select>
+                        <% request.getSession().removeAttribute("books");
+                                        request.getSession().removeAttribute("loan");
+                                        request.getSession().removeAttribute("users");%>
+                        <div class="container-button">
+                            <button type="submit">Modificar</button>
+                            <div class="return-button">
+                                <a href="LoanController">Volver</a>
+                            </div>
                         </div>
-                    </main>
-            </div>
+                    </form>
+                </div>
+            </main>
+        </div>
     </body>
 
-    </html>
+</html>

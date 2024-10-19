@@ -22,29 +22,45 @@
         <%@include file="./layout/header.jsp" %>
         <div class="home-container">
             <%@include file="./layout/sidebar.jsp" %>
-                <main class="main">
-                    <div class="container-form">
-                        <form class="form-login" action="UpdateUserController" method="POST">
+            <main class="main">
+                <div class="container-form">
+                    <form class="form-login" action="UpdateUserController" method="POST">
                         <% Optional<User> userU = (Optional<User>) request.getSession().getAttribute("user");
-                          %>
-                            <h1>Registro de usuario</h1>
-                            <input type="hidden" name="id" value="<%=userU.get().getId()%>">
-                            <input name="name" type="text" placeholder="Nombre" value="<%= userU.get().getName()%>">
-                            <input name="lastname" type="text" placeholder="Apellido" value="<%= userU.get().getLastname()%>">
-                            <input name="email" type="text" placeholder="Correo" value="<%= userU.get().getEmail()%>">
-                            <input name="password" type="password" placeholder="Contraseï¿½a" value="<%= userU.get().getPassword()%>">
-                            <select name="rol">
-                                <option value="<%= userU.get().getRol()%>"><%= userU.get().getRol()%></option>
-                                <option value="Administrador">Administrador</option>
-                                <option value="Usuario">Usuario</option>
-                            </select>
-                            <div class="container-button">
-                                <button type="submit">Modificar</button>
+                        %>
+                        <h1>Registro de usuario</h1>
+                        <input type="hidden" name="id" value="<%=userU.get().getId()%>">
+                        <input name="name" type="text" placeholder="Nombre" value="<%= userU.get().getName()%>">
+                        <input name="lastname" type="text" placeholder="Apellido" value="<%= userU.get().getLastname()%>">
+                        <input name="email" type="text" placeholder="Correo" value="<%= userU.get().getEmail()%>">
+                        <input name="password" type="password" placeholder="Contraseï¿½a" value="<%= userU.get().getPassword()%>">
+                        <%   Optional<User> userS = (Optional<User>) request.getSession().getAttribute("userSession");
+                            if (userS != null && userS.get().getRol().equals("Administrador")) {
+                        %>
+                        <select name="rol">
+                            <option value="<%= userU.get().getRol()%>"><%= userU.get().getRol()%></option>
+                            <option value="Administrador">Administrador</option>
+                            <option value="Usuario">Usuario</option>
+                        </select>
+                        <%}%>
+                        <% String message = request.getParameter("message");
+                            if (message != null && !message.equalsIgnoreCase("Aprobado")) {
+                        %>
+                        <div class="message-error">
+                            <p><%=message%></p>
+                        </div>
+                        <% } else if (message != null && message.equals("Aprobado")) { %>
+                        <div class="message-done">
+                            <p>Usuario registrado exitosamente</p>
+                        </div>
+                        <% }request.removeAttribute("message");
+                        request.removeAttribute("user");%>
+                        <div class="container-button">
+                            <button type="submit">Modificar</button>
 
-                            </div>
-                        </form>
-                    </div>
-                </main>
+                        </div>
+                    </form>
+                </div>
+            </main>
         </div>
 
     </body>

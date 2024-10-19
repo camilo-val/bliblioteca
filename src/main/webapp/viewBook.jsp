@@ -92,7 +92,7 @@
                                 </form>
                             </td><%}%>
                         </tr>
-                        <%}%>
+                        <%} request.getSession().getAttribute("books");%>
                     </tbody>
                 </table>
             </div>
