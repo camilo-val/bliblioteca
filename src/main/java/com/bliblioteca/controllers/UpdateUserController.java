@@ -4,11 +4,15 @@
  */
 package com.bliblioteca.controllers;
 
+import com.biblioteca.utils.EncryptionUtil;
 import com.bliblioteca.models.User;
 import com.bliblioteca.services.UserService;
 import com.bliblioteca.services.UserServiceImpl;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.SecretKey;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,6 +41,12 @@ public class UpdateUserController extends HttpServlet {
         HttpSession session = request.getSession(true);
         Long id = Long.valueOf(request.getParameter("id"));
         Optional<User> user = service.findById(id);
+        try {
+            SecretKey key = (SecretKey) getServletContext().getAttribute("key");
+            user.get().setPassword(EncryptionUtil.decrypt(user.get().getPassword(), key));
+        } catch (Exception ex) {
+            Logger.getLogger(CreateUserController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         session.setAttribute("user", user);
         response.sendRedirect("updateUser.jsp");
     }
@@ -52,12 +62,19 @@ public class UpdateUserController extends HttpServlet {
                 email = request.getParameter("email"),
                 password = request.getParameter("password"),
                 rol = request.getParameter("rol");
-        User user = new User(id,name, lastname, email, password, Boolean.TRUE, rol);
+        try {
+            SecretKey key = (SecretKey) getServletContext().getAttribute("key");
+            password = EncryptionUtil.encrypt(password, key);
+        } catch (Exception ex) {
+            Logger.getLogger(CreateUserController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        User user = new User(id, name, lastname, email, password, Boolean.TRUE, rol);
+
         Boolean isUpdated = service.modified(user);
         session.setAttribute("event", isUpdated.toString());
-        if(isUpdated){
+        if (isUpdated) {
             session.setAttribute("message", "Usuario Modificado Exitosamente");
-        }else{
+        } else {
             session.setAttribute("message", "Error Al Modificar El Usuario");
 
         }

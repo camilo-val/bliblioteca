@@ -1,7 +1,7 @@
 package com.bliblioteca.controllers;
 
 import com.biblioteca.utils.EncryptionUtil;
-import static com.biblioteca.utils.EncryptionUtil.generateKey;
+import static com.biblioteca.utils.EncryptionUtil.loadKey;
 import com.bliblioteca.models.User;
 import com.bliblioteca.services.UserService;
 import com.bliblioteca.services.UserServiceImpl;
@@ -52,15 +52,15 @@ public class CreateUserController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
         String name = request.getParameter("name"),
                 lastname = request.getParameter("lastname"),
                 email = request.getParameter("email"),
                 password = request.getParameter("password"),
                 rol = request.getParameter("rol");
         try {
-            SecretKey key = generateKey();
-            EncryptionUtil.encrypt(password, key);
+            SecretKey key = (SecretKey)getServletContext().getAttribute("key");
+            password = EncryptionUtil.encrypt(password, key);
         } catch (Exception ex) {
             Logger.getLogger(CreateUserController.class.getName()).log(Level.SEVERE, null, ex);
         }

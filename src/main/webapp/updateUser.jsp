@@ -1,3 +1,4 @@
+<%@page import="java.security.Key"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.Optional"%>
 <%@page import="com.bliblioteca.models.User"%>
@@ -24,7 +25,8 @@
                 <main class="main">
                     <div class="container-form">
                         <form class="form-login" action="UpdateUserController" method="POST">
-                        <% Optional<User> userU = (Optional<User>) request.getSession().getAttribute("user");%>
+                        <% Optional<User> userU = (Optional<User>) request.getSession().getAttribute("user");
+                          %>
                             <h1>Registro de usuario</h1>
                             <input type="hidden" name="id" value="<%=userU.get().getId()%>">
                             <input name="name" type="text" placeholder="Nombre" value="<%= userU.get().getName()%>">
